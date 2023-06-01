@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/userList">
+
+    <fragment
+        android:id="@+id/userList"
+        android:name="com.dleite.carrefourdev.src.presentation.view.userlist.UsersListFragment"
+        android:label="UserList"
+        tools:layout="@layout/fragment_list_user">
+        <action
+            android:id="@+id/action_userList_to_usersDetailsFragment"
+            app:destination="@id/usersDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/usersDetailsFragment"
+        android:name="com.dleite.carrefourdev.src.presentation.view.userDetails.UsersDetailsFragment"
+        android:label="UsersDetailsFragment"
+        tools:layout="@layout/fragment_details_user" >
+
+        <argument
+            android:name="userName"
+            app:argType="string" />
+    </fragment>
+
+
+</navigation>

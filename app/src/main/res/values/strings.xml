@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CarrefourDev</string>
+    <string name="back">Voltar</string>
+    <string name="title">Users</string>
+</resources>
