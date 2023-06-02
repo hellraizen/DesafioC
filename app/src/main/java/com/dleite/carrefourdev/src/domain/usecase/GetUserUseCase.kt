@@ -6,7 +6,7 @@ import com.dleite.carrefourdev.src.presentation.model.UserViewData
 import io.reactivex.Single
 import javax.inject.Inject
 
-internal class GetUserUseCase @Inject constructor(
+ class GetUserUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
     operator fun invoke(name: String): Single<UserViewData> {

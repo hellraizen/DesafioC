@@ -6,7 +6,7 @@ import com.dleite.carrefourdev.src.presentation.model.RepoGitListViewData
 import io.reactivex.Single
 import javax.inject.Inject
 
-internal class GetRepoGitUseCase @Inject constructor(
+class GetRepoGitUseCase @Inject constructor(
     private val repoGitRepository: RepoGitRepository
 ) {
     operator fun invoke(name: String): Single<List<RepoGitListViewData>> {
