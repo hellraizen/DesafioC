@@ -2,6 +2,9 @@ package com.dleite.carrefourdev.src.presentation.view.userlist
 
 import com.dleite.carrefourdev.arch.UIState
 
+
 data class UserState(
-    val isLoading: Boolean = false,
-) : UIState
+    val isLoading: Boolean = true,
+    val userList: List<UserListViewData> = emptyList(),
+    val errorMessage: String = "",
+)

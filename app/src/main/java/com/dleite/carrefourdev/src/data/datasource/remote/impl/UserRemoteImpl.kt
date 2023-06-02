@@ -14,7 +14,7 @@ class UserRemoteImpl @Inject constructor(
     override fun fetchUsers(): Single<UsersResponse> =
         service.getUsersList()
 
-    override fun fetchUser(name: String): Single<UserResponse> =
+    override suspend fun fetchUser(name: String): UserResponse =
         service.getUser(name)
 
 }

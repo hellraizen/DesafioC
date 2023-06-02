@@ -1,45 +1,54 @@
 package com.dleite.carrefourdev.src.presentation.view.userDetails
 
-import com.dleite.carrefourdev.arch.viewmodel.ViewModel
-import com.dleite.carrefourdev.src.domain.extensions.applyIOToMainThread
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.dleite.carrefourdev.src.domain.usecase.GetRepoGitUseCase
 import com.dleite.carrefourdev.src.domain.usecase.GetUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 internal class UserDetailViewModel @Inject constructor(
     private val getRepoGitUseCase: GetRepoGitUseCase,
     private val getUserUseCase: GetUserUseCase
-) : ViewModel<UserDetailState, UserDetailAction>(UserDetailState()) {
+) : ViewModel() {
+
+    private val _states = MutableStateFlow(UserDetailState(isLoading = true))
+    val states: StateFlow<UserDetailState> = _states
+
 
     fun getRepoGit(name: String) {
-        getRepoGitUseCase(name)
-            .applyIOToMainThread()
-            .doOnSubscribe { setState { it.copy(isLoading = true) } }
-            .doAfterTerminate { setState { it.copy(isLoading = false) } }
-            .subscribe(
-                { repoGit ->
-                    sendAction { UserDetailAction.ShowRepoGit(repoGit) }
-                },
-                { error ->
-                    sendAction { UserDetailAction.ShowErrorMessage(error.message ?: "") }
-                }
-            ).handleDisposable()
+        viewModelScope.launch {
+            runCatching {
+                getRepoGitUseCase(name)
+            }.onSuccess {
+                _states.value = _states.value.copy(isLoading = false, repoGitList = it)
+            }.onFailure {
+                _states.value = _states.value.copy(
+                    isLoading = false,
+                    repoGitList = emptyList(),
+                    errorMessage = "Algo deu errado"
+                )
+            }
+        }
     }
 
     fun getUser(name: String) {
-        getUserUseCase(name)
-            .applyIOToMainThread()
-            .doOnSubscribe { setState { it.copy(isLoading = true) } }
-            .doAfterTerminate { setState { it.copy(isLoading = false) } }
-            .subscribe(
-                { user ->
-                    sendAction { UserDetailAction.ShowUser(user) }
-                },
-                { error ->
-                    sendAction { UserDetailAction.ShowErrorMessage(error.message ?: "") }
-                }
-            ).handleDisposable()
+        viewModelScope.launch {
+            runCatching {
+                getUserUseCase(name)
+            }.onSuccess {
+                _states.value = _states.value.copy(isLoading = false, user = it)
+            }.onFailure {
+                _states.value = _states.value.copy(
+                    isLoading = false,
+                    repoGitList = emptyList(),
+                    errorMessage = "Algo deu errado"
+                )
+            }
+        }
     }
 }
