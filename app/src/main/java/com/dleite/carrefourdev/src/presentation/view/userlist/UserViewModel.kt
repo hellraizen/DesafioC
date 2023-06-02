@@ -1,9 +1,8 @@
 package com.dleite.carrefourdev.src.presentation.view.userlist
 
-import com.dleite.carrefourdev.arch.viewmodel.ViewModel
-import com.dleite.carrefourdev.src.domain.extensions.applyIOToMainThread
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.dleite.carrefourdev.src.domain.usecase.GetUserListUseCase
-import com.dleite.carrefourdev.src.presentation.view.userDetails.UserDetailState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

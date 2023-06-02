@@ -1,15 +1,22 @@
 package com.dleite.carrefourdev.src.domain.usecase
 
-import com.dleite.carrefourdev.src.domain.extensions.toUserListViewData
+import com.dleite.carrefourdev.src.domain.model.UserList
 import com.dleite.carrefourdev.src.domain.repository.UserRepository
 import com.dleite.carrefourdev.src.presentation.model.UserListViewData
-import io.reactivex.Single
 import javax.inject.Inject
 
- class GetUserListUseCase @Inject constructor(
+class GetUserListUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(): Single<List<UserListViewData>> {
-        return userRepository.getUsersList().toUserListViewData()
+    suspend operator fun invoke(): List<UserListViewData> {
+        return userRepository.getUsersList().toViewDataModel()
     }
+}
+
+fun List<UserList>.toViewDataModel() = this.map { user ->
+    UserListViewData(
+        id = user.id,
+        imgUrl = user.imgUrl,
+        name = user.name,
+    )
 }

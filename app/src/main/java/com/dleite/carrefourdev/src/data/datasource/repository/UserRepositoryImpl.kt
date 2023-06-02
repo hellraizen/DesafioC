@@ -11,9 +11,14 @@ class UserRepositoryImpl @Inject constructor(
     private val remoteDataSource: UserRemote
 ) : UserRepository {
 
-    override fun getUsersList(): Single<List<UserList>> =
-        remoteDataSource.fetchUsers().toListOfUserList()
-            .onErrorResumeNext { throwable -> Single.error(throwable) }
+    override suspend fun getUsersList(): List<UserList> =
+        remoteDataSource.fetchUsers().map { user ->
+            UserList(
+                id = user.id.toString(),
+                imgUrl = user.avatarUrl,
+                name = user.login
+            )
+        }
 
     override suspend fun getUser(name: String): User =
         remoteDataSource.fetchUser(name).toOfUser()

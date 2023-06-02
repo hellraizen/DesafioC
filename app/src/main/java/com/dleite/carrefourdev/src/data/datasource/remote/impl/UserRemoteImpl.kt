@@ -11,7 +11,7 @@ class UserRemoteImpl @Inject constructor(
     private val service: UserService
 ) : UserRemote {
 
-    override fun fetchUsers(): Single<UsersResponse> =
+    override suspend fun fetchUsers(): UsersResponse =
         service.getUsersList()
 
     override suspend fun fetchUser(name: String): UserResponse =

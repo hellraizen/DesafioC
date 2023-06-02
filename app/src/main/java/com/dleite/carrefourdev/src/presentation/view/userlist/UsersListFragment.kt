@@ -43,13 +43,11 @@ class UsersListFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         setupSearch()
     }
-
 
     private fun setupSearch() {
         binding.searchView.setOnQueryTextListener(
@@ -66,20 +64,13 @@ class UsersListFragment : Fragment() {
             })
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.getUsers()
-    }
-
     private fun setupObservers() {
-        onAction(viewModel) { action ->
-            when (action) {
-                is UserAction.ShowUsers -> loadUsersList(action.users)
-                is UserAction.ShowErrorMessage -> loadError(action.errorMessage)
+        lifecycleScope.launch {
+            viewModel.states.collect {
+                setupLoading(it.isLoading)
+                loadUsersList(it.userList)
+                loadError(it.errorMessage)
             }
-        }
-        onStateChange(viewModel) { viewState ->
-            setupLoading(viewState.isLoading)
         }
     }
 
