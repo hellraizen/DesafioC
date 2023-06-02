@@ -4,28 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import android.widget.SearchView
 import android.widget.Toast
-import androidx.core.os.bundleOf
+import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dleite.carrefourdev.R
 import com.dleite.carrefourdev.databinding.FragmentListUserBinding
 import com.dleite.carrefourdev.src.presentation.model.UserListViewData
 import com.dleite.carrefourdev.src.presentation.onAction
 import com.dleite.carrefourdev.src.presentation.onStateChange
 import com.dleite.carrefourdev.src.presentation.view.userlist.adapter.UserAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
-class UsersListFragment : Fragment(), AdapterView.OnItemSelectedListener {
+class UsersListFragment : Fragment() {
 
     private var _binding: FragmentListUserBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: UserViewModel by viewModels()
+
+    private lateinit var adapterLocation: UserAdapter
+    private lateinit var userListLocation: List<UserListViewData>
 
     private val navControl by lazy {
         findNavController()
@@ -49,11 +52,19 @@ class UsersListFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
 
     private fun setupSearch() {
-        //   binding.searchButton.setOnClickListener {
-        //       viewModel.getUsers()
-        //   }
-    }
+        binding.searchView.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener,
+                OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
 
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    filterList(newText)
+                    return true
+                }
+            })
+    }
 
     override fun onResume() {
         super.onResume()
@@ -85,7 +96,8 @@ class UsersListFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     private fun loadUsersList(users: List<UserListViewData>) {
-        val adapterLocation = UserAdapter(users, onItemClickListener = {
+        userListLocation = users;
+        adapterLocation = UserAdapter(users, onItemClickListener = {
             goDetails(it.name)
         })
         binding.recyclerView.run {
@@ -102,12 +114,21 @@ class UsersListFragment : Fragment(), AdapterView.OnItemSelectedListener {
         )
     }
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-
+    private fun filterList(name: String?) {
+        if (name != null) {
+            val filteredList = ArrayList<UserListViewData>()
+            for (i in userListLocation) {
+                if (i.name.lowercase(Locale.ROOT).contains(name)) {
+                    filteredList.add(i)
+                }
+            }
+            if (filteredList.isEmpty()) {
+                loadError("Não encontrado")
+            } else {
+                adapterLocation.setFilteredList(filteredList)
+            }
+        }
     }
 
     override fun onDestroyView() {

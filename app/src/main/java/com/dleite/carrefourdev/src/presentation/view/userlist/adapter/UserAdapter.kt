@@ -8,13 +8,19 @@ import com.dleite.carrefourdev.databinding.ListItemBinding
 import com.dleite.carrefourdev.src.presentation.model.UserListViewData
 
 class UserAdapter(
-    private val userList: List<UserListViewData>,
+    private var userList: List<UserListViewData>,
     private val onItemClickListener: (user: UserListViewData) -> Unit
 ) :
     RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     class UserViewHolder(val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root)
 
+
+    fun setFilteredList(userList: List<UserListViewData>){
+        this.userList = userList
+        notifyDataSetChanged()
+
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val binding = ListItemBinding.inflate(
             LayoutInflater.from(parent.context),

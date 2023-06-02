@@ -2,4 +2,5 @@
     <string name="app_name">CarrefourDev</string>
     <string name="back">Voltar</string>
     <string name="title">Users</string>
+    <string name="pesquisar_usuario">Pesquisar usuario</string>
 </resources>
